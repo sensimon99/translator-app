@@ -1,0 +1,335 @@
+.chat-box {
+    height: 100%;
+    overflow-y: auto;
+    padding: 10px;
+    /* background: #f7f7f7; */
+    border-radius: 5px;
+    margin-bottom: 10px;
+    scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.chat-message {
+    padding: 8px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    display: flex;
+    flex-direction: column;
+    border-bottom: 2px solid #0056b3;
+}
+
+.original-main {
+    display: flex;
+    justify-content: end;
+}
+
+.original {
+    font-weight: bold;
+    color: #475367;
+    background: #EDF4FD;
+    padding: 16px;
+    width: 55%;
+    display: flex;
+    flex-direction: column;
+    border-radius: 16px;
+}
+
+.translated {
+    font-style: italic;
+    color: #475367;
+    color: #475367;
+    padding: 16px;
+    width: 55%;
+    display: flex;
+    flex-direction: column;
+}
+
+
+.chat-body {
+    margin-left: 214px;
+    padding-top: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+header {
+    color: #2D2B32;
+    font-family: Inter;
+    font-size: 16px;
+    font-weight: 500;
+    justify-content: center;
+    display: flex;
+}
+
+.greeting {
+    display: flex;
+    justify-content: center;
+    color: #0A090B;
+    font-family: Inter;
+    font-size: 40px;
+    font-weight: 500;
+}
+
+.languages-main {
+    /* display: flex;
+    justify-content: space-between;
+    max-width: 65vw;
+    align-items: center;
+    padding-left: 25px; */
+    display: flex;
+    justify-content: space-between;
+    width: 87%;
+    align-items: center;
+}
+
+.dropdown {
+    position: absolute;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    list-style: none;
+    padding: 5px;
+    margin-top: 5px;
+    width: max-content;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1;
+}
+
+.dropdown-i {
+    position: absolute;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    list-style: none;
+    padding: 5px;
+    margin-top: 5px;
+    width: max-content;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1;
+    right: 65px;
+}
+
+.dropdown li {
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.dropdown-i li {
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.dropdown li:hover {
+    background: #f0f0f0;
+}
+
+.dropdown-toggle {
+    position: relative;
+    cursor: pointer;
+}
+
+h5 {
+    color: var(--Global-Cool-Grey-800, #6B7180);
+    font-family: Inter;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.textarea-main {
+    /* display: flex;
+    flex-direction: column;
+    margin-left: 25px; */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.language {
+    display: flex;
+    gap: 20px;
+    height: fit-content;
+    align-items: center;
+}
+
+.language-i {
+    display: flex;
+    gap: 6px;
+    height: fit-content;
+    align-items: center;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+.textarea {
+    height: 162px;
+    align-self: stretch;
+    border: 1px solid #E4E7EC;
+    background: #FFF;
+    max-width: 90%;
+}
+
+.input-container {
+    position: relative;
+    width: 90%;
+    display: flex;
+    border-radius: 24px;
+    border: 1px solid #ccc;
+}
+
+.input-container textarea {
+    width: 100%;
+    padding: 20px 0px 126px 16px;
+    border: none;
+    border-radius: 8px;
+    font-family: Inter;
+    font-size: 16px;
+    font-weight: 400;
+    max-height: 200px;
+    outline: none;
+    resize: none;
+}
+
+.send-button {
+    position: absolute;
+    right: 10px;
+    top: 80%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    display: flex;
+    justify-content: end;
+}
+
+.send-icon {
+    width: 20px;
+    height: 20px;
+    fill: #007bff;
+    transition: fill 0.3s;
+}
+
+.send-button:hover .send-icon {
+    fill: #0056b3;
+}
+
+textarea {
+    height: 170px;
+}
+
+.input-container textarea::placeholder {
+    color: #B7BDC8;
+    font-feature-settings: 'cv01' on, 'cv03' on, 'cv04' on;
+    font-family: Inter;
+    font-size: 16px;
+    font-weight: 400;
+    opacity: 1;
+}
+
+/* Target the scrollbar */
+.input-container textarea::-webkit-scrollbar {
+    width: 8px;
+    /* Width of scrollbar */
+}
+
+/* Scrollbar track (background) */
+.input-container textarea::-webkit-scrollbar-track {
+    background: #FFF;
+    /* Light gray background */
+    /* border-radius: 10px;  */
+}
+
+/* Scrollbar thumb (the moving part) */
+.input-container textarea::-webkit-scrollbar-thumb {
+    background: #FFF;
+    /* Darker gray scrollbar */
+    /* border-radius: 10px; */
+}
+
+/* Scrollbar thumb on hover */
+.input-container textarea::-webkit-scrollbar-thumb:hover {
+    background: #FFF;
+    /* Even darker on hover */
+}
+
+/* .language h5 {
+    cursor: pointer;
+    color: black;
+    transition: color 0.3s ease;
+}
+
+
+.language h5.selected {
+    color: #1751D0;
+}
+
+.language h5:hover {
+    color: #1751D0;
+} */
+/* Default styling for h5 */
+.language h5 {
+    cursor: pointer;
+    transition: color 0.3s ease;
+    position: relative;
+    padding-bottom: 5px;
+    color: var(--Global-Cool-Grey-800, #6B7180);
+    font-family: Inter;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    color: #1751D0;
+}
+
+.language h5.selected {
+    color: #1751D0;
+}
+
+.language h5:hover {
+    color: #1751D0;
+}
+
+.language h5.selected::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #1751D0;
+}
+
+.summarize-btn {
+    border-radius: 20px;
+    cursor: pointer;
+    border: 1px solid gainsboro;
+
+}
+
+.lang-div {
+    width: 90%;
+}
+
+.chat-container {
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    height: 40vh;
+    margin: auto;
+    /* border: 1px solid #ccc;
+    background-color: var(--bg-color); */
+    /* color: var(--text-color); */
+    width: 100%;
+    border: none;
+}
+
+@media (max-width: 800px) {
+    .chat-body {
+        margin-left: 171px;
+    }
+}

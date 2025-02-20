@@ -1,0 +1,19 @@
+.App {
+    text-align: center;
+    margin: 20px;
+}
+
+textarea {
+    width: 80%;
+    height: 150px;
+    margin-bottom: 10px;
+}
+
+button {
+    padding: 10px 20px;
+    margin-top: 10px;
+}
+
+.results {
+    margin-top: 20px;
+}
