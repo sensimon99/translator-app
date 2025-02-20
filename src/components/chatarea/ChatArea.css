@@ -45,7 +45,7 @@
 
 
 .chat-body {
-    margin-left: 214px;
+    /* margin-left: 214px; */
     padding-top: 25px;
     display: flex;
     flex-direction: column;
