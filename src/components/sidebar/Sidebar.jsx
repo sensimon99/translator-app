@@ -5,7 +5,7 @@ const Sidebar = () => {
   return (
     <div>
       <div className='sidebar-main'>
-        <div className='sidebar'>
+        <div className='sidebar-i'>
           <div className='deepsearch-main'>
             <h1 className='deepsearch'>DeepSearch</h1>
             <button className='new-chat'>New Chat</button>

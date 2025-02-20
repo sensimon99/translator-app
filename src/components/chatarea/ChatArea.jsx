@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './ChatArea.css';
 
-
 const languages = ['English (en)', 'Portuguese (pt)', 'Spanish (es)', 'Russian (ru)', 'Turkish (tr)', 'French (fr)'];
 
 const ChatArea = () => {
@@ -13,6 +12,8 @@ const ChatArea = () => {
   const [chatHistory, setChatHistory] = useState([]);
   const [loading, setLoading] = useState(false);
   const chatBoxRef = useRef(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     if (chatBoxRef.current) {
@@ -20,16 +21,24 @@ const ChatArea = () => {
     }
   }, [chatHistory]);
 
-  const detectLanguage = async (text) => {
-    if (!self.ai?.languageDetector) return null;
-    try {
-      const detector = await self.ai.languageDetector.create();
-      const results = await detector.detect({ text });
-      return results[0]?.detectedLanguage || null;
-    } catch {
+const detectLanguage = async (text) => {
+  const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&q=${encodeURIComponent(text)}`;
+
+  try {
+      const response = await fetch(url);
+      const data = await response.json();
+
+      // Extract detected language from API response
+      let detectedLang = data[2]; // Language code (e.g., 'en')
+
+      console.log("Detected Language:", detectedLang);
+      return detectedLang;
+  } catch (error) {
+      console.error("Error detecting language:", error);
       return null;
-    }
-  };
+  }
+};
+
 
   const translateText = async (text, fromLang, toLang) => {
     if (!self.ai?.translator) return text;
@@ -43,15 +52,26 @@ const ChatArea = () => {
   };
 
   const handleSend = async () => {
-    if (!message.trim()) return;
+    if (!message.trim()) {
+      setErrorMessage("Please enter a message");
+
+      setTimeout(() => {
+        setErrorMessage("");
+      }, 1000);
+
+      return;
+    }
+
+    setErrorMessage("");
     setLoading(true);
-    let sourceLang = selectedSourceLanguage.includes('Detect') ? 'auto' : selectedSourceLanguage.match(/\((.*?)\)/)[1];
+
+    let sourceLang = selectedSourceLanguage.includes("Detect") ? "auto" : selectedSourceLanguage.match(/\((.*?)\)/)[1];
     let targetLang = selectedTargetLanguage.match(/\((.*?)\)/)[1];
 
-    if (sourceLang === 'auto') {
+    if (sourceLang === "auto") {
       const detectedLang = await detectLanguage(message);
       if (!detectedLang) {
-        alert('Could not detect language. Please try again.');
+        alert("Could not detect language. Please try again.");
         setLoading(false);
         return;
       }
@@ -60,7 +80,7 @@ const ChatArea = () => {
 
     const translatedText = await translateText(message, sourceLang, targetLang);
     setChatHistory([...chatHistory, { text: message, translated: translatedText }]);
-    setMessage('');
+    setMessage(""); // Clear textarea after sending
     setLoading(false);
   };
 
@@ -71,7 +91,7 @@ const ChatArea = () => {
       return;
     }
 
-    console.log("✅ Message has more than 150 words. Proceeding...");
+    console.log("Message has more than 150 words. Proceeding...");
 
     setLoading(true);
 
@@ -79,40 +99,36 @@ const ChatArea = () => {
       ? 'auto'
       : selectedSourceLanguage.match(/\((.*?)\)/)[1];
 
-    console.log("🌍 Source Language:", sourceLang);
+    console.log("Source Language:", sourceLang);
 
     let textToSummarize = message;
 
-    // Translate to English before summarization if needed
     if (sourceLang !== 'en') {
-      console.log("🔄 Translating text to English before summarization...");
+      console.log("Translating text to English before summarization...");
       textToSummarize = await translateText(textToSummarize, sourceLang, 'en');
-      console.log("✅ Translated text:", textToSummarize);
+      console.log("Translated text:", textToSummarize);
     }
 
-    // Check if the AI summarization API is available
     if (!window.ai?.summarizer) {
       alert('Summarization is not supported in this browser.');
       setLoading(false);
       return;
     }
 
-    console.log("🧠 Summarization API is available. Creating summarizer...");
+    console.log("Summarization API is available. Creating summarizer...");
 
     try {
       const summarizer = await window.ai.summarizer.create();
-      console.log("✅ Summarizer created. Summarizing text...");
+      console.log("Summarizer created. Summarizing text...");
 
       const summary = await summarizer.summarize({ text: textToSummarize });
-      console.log("✅ Summary received:", summary);
+      console.log("Summary received:", summary);
 
-      // ✅ Update the textarea with the summarized text
       setMessage(summary);
 
-      // ✅ Save both original and summary in chat history
       setChatHistory([...chatHistory, { text: message, translated: summary }]);
 
-      console.log("📜 Chat history updated.");
+      console.log("Chat history updated.");
     } catch (error) {
       console.error("❌ Summarization error:", error);
       alert('Error summarizing text. Please try again.');
@@ -123,29 +139,27 @@ const ChatArea = () => {
 
   const testSummarizer = async () => {
     if (!window.ai?.summarizer) {
-      console.error("❌ AI Summarizer is not available in this browser.");
+      console.error("AI Summarizer is not available in this browser.");
       return;
     }
-    console.log("🧠 Creating summarizer...");
+    console.log("Creating summarizer...");
     try {
       const summarizer = await window.ai.summarizer.create();
-      console.log("✅ Summarizer created:", summarizer);
+      console.log("Summarizer created:", summarizer);
     } catch (error) {
-      console.error("❌ Error creating summarizer:", error);
+      console.error("Error creating summarizer:", error);
     }
   };
-
 
   const handleMessageChange = async (e) => {
     const text = e.target.value;
     setMessage(text);
 
-    // Only detect language if "Detect language" is selected
     if (selectedSourceLanguage === "Detect language" && text.trim().length > 3) {
       const detectedLang = await detectLanguage(text);
       console.log("🔍 Detected Language Code:", detectedLang);
 
-      if (!detectedLang) return; // Do nothing if detection fails
+      if (!detectedLang) return;
 
       const supportedLanguages = {
         en: "English (en)",
@@ -161,27 +175,50 @@ const ChatArea = () => {
       }
     }
   };
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
   return (
     <div>
       <main className='chat-body'>
+        <button className="menu-bar" onClick={toggleSidebar}>
+          ☰
+        </button>
+        <aside className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
+          <button className="close-btn" onClick={toggleSidebar}>✖</button>
+          <div className='deepsearch-main'>
+            <h1 className='deepsearch-i'>DeepSearch</h1>
+            <button className='new-chat-i'>New Chat</button>
+          </div>
+
+          <div className='user-details'>
+            <div className='user-container'>
+              <div className='user-info'>
+                <h3 className='user-name'>Omawunmi</h3>
+                <h3 className='user-email'>Oma@gmail.com</h3>
+              </div>
+              <div className='user-svg'>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path d="M6.25008 3.33341C6.71032 3.33342 7.08342 2.96032 7.08342 2.50008C7.08342 2.03984 6.71032 1.66675 6.25008 1.66675H5.00008C3.15913 1.66675 1.66675 3.15913 1.66675 5.00008V15.0001C1.66675 16.841 3.15913 18.3334 5.00008 18.3334H6.25008C6.71032 18.3334 7.08341 17.9603 7.08341 17.5001C7.08341 17.0398 6.71032 16.6667 6.25008 16.6667H5.00008C4.07961 16.6667 3.33341 15.9206 3.33341 15.0001L3.33342 5.00008C3.33342 4.07961 4.07961 3.33341 5.00008 3.33341H6.25008Z" fill="#000501" />
+                  <path d="M18.9227 10.5893C19.2481 10.2639 19.2481 9.73626 18.9227 9.41083L15.5893 6.07749C15.2639 5.75206 14.7363 5.75206 14.4108 6.07749C14.0854 6.40293 14.0854 6.93057 14.4108 7.256L16.3216 9.16675L6.66675 9.16675C6.20651 9.16675 5.83341 9.53984 5.83341 10.0001C5.83341 10.4603 6.20651 10.8334 6.66675 10.8334L16.3216 10.8334L14.4108 12.7442C14.0854 13.0696 14.0854 13.5972 14.4108 13.9227C14.7363 14.2481 15.2639 14.2481 15.5893 13.9227L18.9227 10.5893Z" fill="#000501" />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </aside>
+
         <header>AI Translator</header>
-        {/* <div className='greeting'>Hi, how can I be of help?</div> */}
 
         <div className="chat-container">
-          <div className="chat-box" ref={chatBoxRef}> {/* Add ref here */}
+          <div className="chat-box" ref={chatBoxRef}>
             {chatHistory.map((msg, index) => (
               <div key={index} className="chat-message">
-                {/* Original Text */}
                 <div className="original-main">
                   <p className="original">{msg.text}</p>
-                  <p className="language-label">({msg.detectedLanguage})</p>
                 </div>
 
-                {/* Translated Text */}
                 <div className="translated-main">
                   <p className="translated">{msg.translated}</p>
-                  {/* <p className="language-label">({msg.translatedLanguage})</p> */}
-                  <p className="language-label">({msg.detectedLanguage})</p>
                 </div>
               </div>
             ))}
@@ -201,6 +238,12 @@ const ChatArea = () => {
               </h5>
               {sourceDropdownOpen && (
                 <ul className="dropdown">
+                  <li onClick={() => {
+                    setSelectedSourceLanguage("Detect language");
+                    setSourceDropdownOpen(false);
+                  }}>
+                    Detect language
+                  </li>
                   {languages.map((lang) => (
                     <li key={lang} onClick={() => {
                       setSelectedSourceLanguage(lang);
@@ -210,15 +253,24 @@ const ChatArea = () => {
                     </li>
                   ))}
                 </ul>
+
               )}
             </div>
-
-            <div className="language-i">
+            
+            <div className="language-i" onClick={() => {
+              if (selectedSourceLanguage) {
+                const temp = selectedSourceLanguage;
+                setSelectedSourceLanguage(selectedTargetLanguage);
+                setSelectedTargetLanguage(temp);
+              }
+            }}>
               <h5>Translate to</h5>
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
-                <path d="M5.25 7.5L3 5.25M3 5.25L5.25 3M3 5.25H15M12.75 10.5L15 12.75M15 12.75L12.75 15M15 12.75H3" stroke="#0A090B" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M5.25 7.5L3 5.25M3 5.25L5.25 3M3 5.25H15M12.75 10.5L15 12.75M15 12.75L12.75 15M15 12.75H3"
+                  stroke="#0A090B" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </div>
+
 
             {/* Target Language */}
             <div className="language">
@@ -230,7 +282,7 @@ const ChatArea = () => {
               </h5>
               {targetDropdownOpen && (
                 <ul className="dropdown-i">
-                  {languages.map((lang) => (
+                  {languages.filter(lang => lang !== "Detect language").map((lang) => (
                     <li key={lang} onClick={() => {
                       setSelectedTargetLanguage(lang);
                       setTargetDropdownOpen(false);
@@ -245,9 +297,10 @@ const ChatArea = () => {
 
           <div className="input-container">
             <textarea
+              className={`chat-input ${errorMessage ? "error" : ""}`}
               value={message}
               onChange={handleMessageChange}
-              placeholder="Type a message..."
+              placeholder={errorMessage || "Type a message..."}
             ></textarea>
 
             <button className="send-button" onClick={handleSend}>
