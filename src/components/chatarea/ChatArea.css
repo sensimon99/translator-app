@@ -319,12 +319,6 @@ textarea {
     flex-direction: column;
 }
 
-@media (max-width: 800px) {
-    .chat-body {
-        margin-left: 171px;
-    }
-}
-
 @media (max-width: 540px) {
     .sidebar {
         position: fixed;

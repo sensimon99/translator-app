@@ -11,7 +11,7 @@ const ChatArea = () => {
   const [message, setMessage] = useState('');
   const [chatHistory, setChatHistory] = useState([]);
   const [loading, setLoading] = useState(false);
-  const chatBoxRef = useRef(null);
+  const chatBoxRef = useRef(null);0
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
